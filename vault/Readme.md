@@ -6,7 +6,7 @@
 kind create cluster
 
 # Switch to kind context
-k config use-context kind-kind
+kubectl config use-context kind-kind
 
 # Install Vault
 helm repo add hashicorp https://helm.releases.hashicorp.com
@@ -16,7 +16,7 @@ helm install vault hashicorp/vault \
     --namespace vault \
     --create-namespace
 
-# Verify that Vault service is running
+# Verify that Vault is running
 watch kubectl -n vault get pods
 
 # Check logs for possible issues
