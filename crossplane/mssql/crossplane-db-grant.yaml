@@ -1,0 +1,33 @@
+# Read-Only Grant
+apiVersion: mssql.sql.crossplane.io/v1alpha1
+kind: Grant
+metadata:
+  name: readonly-grant
+spec:
+  forProvider:
+    database: test-db
+    user: readonly-user
+    permissions:
+      - "CONNECT"
+      - "SELECT"  # Use standard SQL permissions if the role name fails
+  providerConfigRef:
+    name: mssql-local
+---
+# Read-Write Grant
+apiVersion: mssql.sql.crossplane.io/v1alpha1
+kind: Grant
+metadata:
+  name: readwrite-grant
+spec:
+  forProvider:
+    database: test-db
+    user: readwrite-user
+    permissions:
+      - "CREATE TABLE"
+      - "ALTER"
+      - "CONNECT"
+      - "SELECT"
+      - "INSERT"
+      - "UPDATE"
+  providerConfigRef:
+    name: mssql-local

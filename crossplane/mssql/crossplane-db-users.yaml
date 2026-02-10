@@ -1,0 +1,29 @@
+# RO User
+apiVersion: mssql.sql.crossplane.io/v1alpha1
+kind: User
+metadata:
+  name: readonly-user
+spec:
+  forProvider:
+    database: test-db      # Target your database
+    passwordSecretRef:     # Secret for the user's password
+      name: ro-user-password
+      namespace: crossplane-system
+      key: password
+  providerConfigRef:
+    name: mssql-local
+---
+# RW User
+apiVersion: mssql.sql.crossplane.io/v1alpha1
+kind: User
+metadata:
+  name: readwrite-user
+spec:
+  forProvider:
+    database: test-db      # Target your database
+    passwordSecretRef:     # Secret for the user's password
+      name: rw-user-password
+      namespace: crossplane-system
+      key: password
+  providerConfigRef:
+    name: mssql-local

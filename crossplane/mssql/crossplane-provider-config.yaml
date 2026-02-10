@@ -1,0 +1,33 @@
+# install provider-sql for crossplane
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-sql
+spec:
+  package: xpkg.upbound.io/crossplane-contrib/provider-sql:v0.9.0
+---
+# create secret to connect
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mssql-conn
+  namespace: crossplane-system
+type: Opaque
+stringData:
+  # mssql cluster can be reached by container name as it was added to the docker kind network
+  endpoint: mssql-test
+  port: "1433"
+  username: sa
+  password: YourStrong!Passw0rd
+---
+# configure the provider
+apiVersion: mssql.sql.crossplane.io/v1alpha1
+kind: ProviderConfig
+metadata:
+  name: mssql-local
+spec:
+  credentials:
+    source: MSSQLConnectionSecret
+    connectionSecretRef:
+      namespace: crossplane-system
+      name: mssql-conn

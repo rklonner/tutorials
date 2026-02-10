@@ -1,0 +1,7 @@
+apiVersion: mssql.sql.crossplane.io/v1alpha1
+kind: Database
+metadata:
+  name: test-db
+spec:
+  providerConfigRef:
+    name: mssql-local
