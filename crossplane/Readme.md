@@ -17,4 +17,7 @@ helm install crossplane crossplane-stable/crossplane \
 
 # Verify the installation
 kubectl get pods -n crossplane-system --watch
+
+# Get Crossplane version
+kubectl get deployment crossplane -n crossplane-system -o jsonpath='{.spec.template.spec.containers[0].image}'
 ```
