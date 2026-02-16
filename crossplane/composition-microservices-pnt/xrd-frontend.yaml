@@ -1,4 +1,3 @@
-# XFrontend XRD (Same structure for XBackend and XAPI)
 apiVersion: apiextensions.crossplane.io/v2
 kind: CompositeResourceDefinition
 metadata:
