@@ -1,0 +1,44 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xapps.example.com
+spec:
+  compositeTypeRef:
+    apiVersion: example.com/v1alpha1
+    kind: XApp
+  mode: Pipeline
+  pipeline:
+  - step: patch-and-transform
+    functionRef:
+      name: crossplane-contrib-function-patch-and-transform
+    input:
+      apiVersion: pt.fn.crossplane.io/v1beta1
+      kind: Resources
+      resources:
+        - name: frontend-service
+          base:
+            apiVersion: example.com/v1alpha1
+            kind: XFrontend
+          patches:
+            - type: FromCompositeFieldPath
+              fromFieldPath: spec.projectName
+              toFieldPath: spec.prefix
+
+        - name: backend-service
+          base:
+            apiVersion: example.com/v1alpha1
+            kind: XBackend
+          patches:
+            - type: FromCompositeFieldPath
+              fromFieldPath: spec.projectName
+              toFieldPath: spec.prefix
+  - step: filter-resources
+    functionRef:
+      name: crossplane-contrib-function-cel-filter
+    input:
+      apiVersion: cel.fn.crossplane.io/v1beta1
+      kind: Filters
+      filters:
+        - name: backend-service
+          # This CEL expression determines if the resource stays in the pipeline
+          expression: "has(observed.composite.resource.spec.includeBackend) && observed.composite.resource.spec.includeBackend == true"

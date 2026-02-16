@@ -1,0 +1,27 @@
+# Xbackend XRD (Same structure for XBackend and XAPI)
+apiVersion: apiextensions.crossplane.io/v2
+kind: CompositeResourceDefinition
+metadata:
+  name: xbackends.example.com
+spec:
+  group: example.com
+  names:
+    kind: XBackend
+    plural: xbackends
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              prefix: { type: string }
+          status:
+            type: object
+            properties:
+              message:
+                type: string

@@ -1,0 +1,44 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xfrontends.example.com
+spec:
+  compositeTypeRef:
+    apiVersion: example.com/v1alpha1
+    kind: XFrontend
+  mode: Pipeline
+  pipeline:
+  - step: patch-and-transform
+    functionRef:
+      name: crossplane-contrib-function-patch-and-transform
+    input:
+      apiVersion: pt.fn.crossplane.io/v1beta1
+      kind: Resources
+      resources:
+        - name: nginx-deployment
+          base:
+            apiVersion: apps/v1
+            kind: Deployment
+            spec:
+              replicas: 1
+              selector:
+                matchLabels:
+                  app: nginx
+              template:
+                metadata:
+                  labels:
+                    app: nginx
+                spec:
+                  containers:
+                  - name: nginx
+                    image: nginx:latest
+          patches:
+            # This creates "projectname-deployment-frontend"
+            - type: FromCompositeFieldPath
+              fromFieldPath: spec.prefix
+              toFieldPath: metadata.name
+              transforms:
+                - type: string
+                  string:
+                    type: Format
+                    fmt: "%s-deployment-frontend"
