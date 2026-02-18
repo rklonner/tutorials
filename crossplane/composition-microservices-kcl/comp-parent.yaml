@@ -1,0 +1,46 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xapps.example.com
+spec:
+  compositeTypeRef:
+    apiVersion: example.com/v1alpha1
+    kind: XApp
+  mode: Pipeline
+  pipeline:
+  - step: create-deployment-and-service
+    functionRef:
+      name: crossplane-contrib-function-kcl
+    input:
+      apiVersion: krm.kcl.dev/v1alpha1
+      kind: KCLInput
+      spec:
+        source: |
+          observed_xr = option("params").oxr
+
+          _frontend = {
+            apiVersion = "example.com/v1alpha1",
+            kind = "XFrontend",
+            metadata = {
+              name = observed_xr.metadata.name + "-frontend"
+            },
+            spec = {
+              prefix = observed_xr.spec.projectName
+            }
+          }
+
+          _backend = {
+            apiVersion = "example.com/v1alpha1",
+            kind = "XBackend",
+            metadata = {
+              name = observed_xr.metadata.name + "-backend"
+            },
+            spec = {
+              prefix = observed_xr.spec.projectName
+            }
+          }
+
+          items = [
+            _frontend,
+            if observed_xr.spec.includeBackend: _backend
+          ]

@@ -1,0 +1,40 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xfrontends.example.com
+spec:
+  compositeTypeRef:
+    apiVersion: example.com/v1alpha1
+    kind: XFrontend
+  mode: Pipeline
+  pipeline:
+  - step: create-deployment
+    functionRef:
+      name: crossplane-contrib-function-kcl
+    input:
+      apiVersion: krm.kcl.dev/v1alpha1
+      kind: KCLInput
+      spec:
+        source: |
+          observed_xr = option("params").oxr
+
+          _deployment = {
+            apiVersion = "apps/v1",
+            kind = "Deployment",
+            metadata = {
+              name = observed_xr.metadata.name + "-deployment-frontend"
+            },
+            spec = {
+              replicas = 1,
+              selector.matchLabels = {app = "nginx"},
+              template = {
+                metadata.labels = {app = "nginx"},
+                spec.containers = [{
+                     name = "nginx",
+                     image = "nginx:latest"
+                   }]
+              }
+            }
+          }
+          items = [_deployment]
+

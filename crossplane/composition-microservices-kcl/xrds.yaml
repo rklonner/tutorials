@@ -1,0 +1,85 @@
+apiVersion: apiextensions.crossplane.io/v2
+kind: CompositeResourceDefinition
+metadata:
+  name: xbackends.example.com
+spec:
+  group: example.com
+  names:
+    kind: XBackend
+    plural: xbackends
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              prefix: { type: string }
+          status:
+            type: object
+            properties:
+              message:
+                type: string
+---
+apiVersion: apiextensions.crossplane.io/v2
+kind: CompositeResourceDefinition
+metadata:
+  name: xfrontends.example.com
+spec:
+  scope: Namespaced
+  group: example.com
+  names:
+    kind: XFrontend
+    plural: xfrontends
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              prefix: { type: string }
+          status:
+            type: object
+            properties:
+              message:
+                type: string
+---
+apiVersion: apiextensions.crossplane.io/v2
+kind: CompositeResourceDefinition
+metadata:
+  name: xapps.example.com
+spec:
+  scope: Namespaced
+  group: example.com
+  names:
+    kind: XApp
+    plural: xapps
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            required: [projectName]
+            properties:
+              projectName: { type: string }
+              includeBackend: { type: boolean, default: true }
+              includeFrontend: { type: boolean, default: true }
+          status:
+            type: object
+            properties:
+              message:
+                type: string
