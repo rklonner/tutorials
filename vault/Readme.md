@@ -17,7 +17,7 @@ helm install vault hashicorp/vault \
     --create-namespace
 
 # Verify that Vault is running
-watch kubectl -n vault get pods
+kubectl -n vault get pods --watch
 
 # Check logs for possible issues
 kubectl -n vault logs -f vault-0
