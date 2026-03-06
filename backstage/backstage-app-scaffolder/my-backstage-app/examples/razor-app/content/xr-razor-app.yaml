@@ -1,7 +1,7 @@
 apiVersion: example.com/v1alpha1
 kind: RazorApp
 metadata:
-  name: ${{ values.name }}
-  namespace: ${{ values.name }}
+  name: ${{ values.projectName }}
+  namespace: ${{ values.projectName }}
 spec:
-  projectName: ${{ values.name }}
+  projectName: ${{ values.projectName }}
